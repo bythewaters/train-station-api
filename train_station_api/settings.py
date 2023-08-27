@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "drf_spectacular",
     "debug_toolbar",
+    "users",
 ]
 
 MIDDLEWARE = [
@@ -108,6 +109,8 @@ AUTH_PASSWORD_VALIDATORS = [
                 "NumericPasswordValidator",
     },
 ]
+
+AUTH_USER_MODEL = "users.User"
 
 
 # Internationalization
