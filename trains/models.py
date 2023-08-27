@@ -2,7 +2,7 @@ from django.db import models
 
 
 class TrainType(models.Model):
-    class ServicesChooseField(models.TextChoices):
+    class Services(models.TextChoices):
         air_conditioning = "air-conditioning"
         wc = "WC"
         bistro_carriage = "bistro carriage"
@@ -12,7 +12,7 @@ class TrainType(models.Model):
         refreshment_service = "a in-seat refreshment service"
 
     name = models.CharField(max_length=255)
-    services = models.CharField(max_length=255, choices=ServicesChooseField)
+    services = models.CharField(max_length=255, choices=Services.choices)
 
 
 class Train(models.Model):

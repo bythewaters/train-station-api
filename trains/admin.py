@@ -18,7 +18,7 @@ class TrainTypeAdmin(ModelAdmin):
 class TrainAdmin(ModelAdmin):
     list_display = (
         "name",
-        "cargo_place",
+        "cargo_num",
         "places_in_cargo",
         "train_type",
     )
