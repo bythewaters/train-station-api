@@ -1,17 +1,21 @@
 from django.contrib import admin
 from django.contrib.admin import ModelAdmin
 
-from trains.models import TrainType, Train
+from trains.models import TrainType, Train, Service
 
 
 @admin.register(TrainType)
 class TrainTypeAdmin(ModelAdmin):
-    list_display = (
-        "name",
-        "services"
-    )
+    list_display = ("name", "service_names",)
     ordering = ("name",)
-    list_filter = ("services",)
+    filter_horizontal = ("services",)
+
+    def service_names(self, obj):
+        return ", ".join(
+            [str(p) for p in obj.services.all()]
+        )
+
+    service_names.short_description = "Services"
 
 
 @admin.register(Train)
@@ -24,3 +28,6 @@ class TrainAdmin(ModelAdmin):
     )
     ordering = ("name",)
     list_filter = ("train_type",)
+
+
+admin.site.register(Service)
