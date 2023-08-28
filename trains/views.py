@@ -1,7 +1,7 @@
 from rest_framework import viewsets, permissions
 
-from trains.models import TrainType, Train
-from trains.serializers import TrainTypeSerializer, TrainSerializer
+from trains.models import TrainType, Train, Service
+from trains.serializers import TrainTypeSerializer, TrainSerializer, ServiceSerializer
 
 
 class TrainTypeViewSet(viewsets.ModelViewSet):
@@ -13,4 +13,10 @@ class TrainTypeViewSet(viewsets.ModelViewSet):
 class TrainViewSet(viewsets.ModelViewSet):
     queryset = Train.objects.all()
     serializer_class = TrainSerializer
+    permission_classes = (permissions.IsAdminUser,)
+
+
+class ServiceViewSet(viewsets.ModelViewSet):
+    queryset = Service.objects.all()
+    serializer_class = ServiceSerializer
     permission_classes = (permissions.IsAdminUser,)
