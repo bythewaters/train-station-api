@@ -4,7 +4,7 @@ from rest_framework import serializers
 from routes.models import Station, Route
 
 
-class StationTypeSerializer(serializers.ModelSerializer):
+class StationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Station
         fields = [
