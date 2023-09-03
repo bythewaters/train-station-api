@@ -3,11 +3,14 @@ from django.contrib.gis.db.models.functions import Distance as DistanceFunc
 from django.db.models import QuerySet
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import extend_schema, OpenApiParameter
+from geopy import Nominatim
 from rest_framework import viewsets, permissions
 from rest_framework.exceptions import ValidationError
 
 from routes.models import Station, Route
 from routes.serializers import StationSerializer, RouteSerializer
+
+geolocator = Nominatim(user_agent="station")
 
 
 class StationListView(viewsets.ModelViewSet):
@@ -39,6 +42,14 @@ class StationListView(viewsets.ModelViewSet):
                 "distance"
             )[:1]
         return queryset
+
+    def perform_create(self, serializer):
+        address = serializer.initial_data["coordinate"]
+        geo_coordinate = geolocator.geocode(address)
+        lat = geo_coordinate.latitude
+        lng = geo_coordinate.longitude
+        point = Point(lng, lat)
+        serializer.save(location=point)
 
     @extend_schema(
         parameters=[
