@@ -4,7 +4,10 @@ from django.db import models
 
 class Station(models.Model):
     name = models.CharField(max_length=255, unique=True)
-    coordinate = gis_models.PointField(srid=4326)
+    coordinate = gis_models.PointField(srid=4326, null=True)
+
+    def __str__(self) -> str:
+        return self.name
 
 
 class Route(models.Model):
