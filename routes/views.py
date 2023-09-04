@@ -3,9 +3,10 @@ from django.contrib.gis.db.models.functions import Distance as DistanceFunc
 from django.db.models import QuerySet
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import extend_schema, OpenApiParameter
-from geopy import Nominatim
+from geopy.geocoders import Nominatim
 from rest_framework import viewsets, permissions
 from rest_framework.exceptions import ValidationError
+from rest_framework.request import Request
 
 from routes.models import Station, Route
 from routes.serializers import StationSerializer, RouteSerializer
@@ -37,19 +38,20 @@ class StationListView(viewsets.ModelViewSet):
             except ValueError:
                 raise ValidationError("You must set geom in format: 'number,number'")
             return queryset.annotate(
-                distance=DistanceFunc("geom", point)
+                distance=DistanceFunc("coordinate", point)
             ).order_by(
                 "distance"
             )[:1]
         return queryset
 
-    def perform_create(self, serializer):
+    def perform_create(self, serializer: StationSerializer) -> None:
         address = serializer.initial_data["coordinate"]
         geo_coordinate = geolocator.geocode(address)
-        lat = geo_coordinate.latitude
-        lng = geo_coordinate.longitude
-        point = Point(lng, lat)
-        serializer.save(location=point)
+        if geo_coordinate is not None:
+            lat = geo_coordinate.latitude
+            lng = geo_coordinate.longitude
+            point = Point(lng, lat)
+            serializer.save(coordinate=point)
 
     @extend_schema(
         parameters=[
@@ -61,7 +63,7 @@ class StationListView(viewsets.ModelViewSet):
                             "ex.(?coordinate=56.3443,30.4343)",
             )]
     )
-    def list(self, request, *args, **kwargs):
+    def list(self, request: Request, *args, **kwargs) -> list:
         return super().list(request, *args, **kwargs)
 
 
