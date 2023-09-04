@@ -20,7 +20,7 @@ class TrainAdmin(GISModelAdmin):
         },
     }
 
-# TODO I must add feature it calculate distance between 2 stations
+
 @admin.register(Route)
 class TrainAdmin(ModelAdmin):
     list_display = (
