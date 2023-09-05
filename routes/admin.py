@@ -31,7 +31,7 @@ class TrainAdmin(ModelAdmin):
         "stop_stations_names",
     )
     ordering = ("distance",)
-    filter_horizontal = ("stop_stations_names",)
+    filter_horizontal = ("stop_station",)
 
     def stop_stations_names(self, obj: Route) -> str:
         return ", ".join(
