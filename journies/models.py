@@ -1,6 +1,9 @@
 from datetime import timedelta, datetime
+from typing import Type
 
 from django.db import models
+from django.utils import timezone
+from rest_framework.exceptions import ValidationError
 
 from routes.models import Route
 from trains.models import Train
@@ -32,7 +35,9 @@ class Journey(models.Model):
         :return:
         arrival_time type datetime
         """
-        duration = self.route.distance / (self.train.train_type.max_speed // 1.5)
+        duration = self.route.distance / (
+            self.train.train_type.max_speed // 1.5
+        )
         if self.route.stop_station:
             for station in self.route.stop_station.all():
                 duration += station.stop_time / 60
@@ -41,9 +46,23 @@ class Journey(models.Model):
         return arrival_time
 
     def save(self, *args, **kwargs):
+        self.clean()
         if self.route and self.train and self.departure_time:
             self.arrival_time = self.calculate_arrival_time()
         super().save(*args, **kwargs)
+
+    @staticmethod
+    def validate_date(
+        departure_time: datetime,
+        error_to_raise: Type[ValidationError],
+    ):
+        if departure_time < timezone.now():
+            raise error_to_raise("Departure time must be in the future.")
+
+    def clean(self) -> None:
+        super().clean()
+        if self.departure_time <= timezone.now():
+            raise ValidationError("Departure time must be in the future.")
 
     def __str__(self) -> str:
         return (f"{self.route.source.name} - "

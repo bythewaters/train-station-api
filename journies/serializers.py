@@ -1,11 +1,11 @@
 from rest_framework import serializers
 
-from routes.models import Station, Route
+from journies.models import Journey, Crew
 
 
 class CrewSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Station
+        model = Crew
         fields = [
             "id",
             "first_name",
@@ -16,7 +16,7 @@ class CrewSerializer(serializers.ModelSerializer):
 
 class JourneySerializer(serializers.ModelSerializer):
     class Meta:
-        model = Route
+        model = Journey
         fields = [
             "id",
             "route",
@@ -24,3 +24,11 @@ class JourneySerializer(serializers.ModelSerializer):
             "crew",
             "departure_time",
         ]
+
+    def validate(self, validated_data: dict) -> dict:
+        data = super(JourneySerializer, self).validate(validated_data)
+        Journey.validate_date(
+            validated_data.get("departure_time"),
+            serializers.ValidationError,
+        )
+        return data
