@@ -16,7 +16,7 @@ class Route(models.Model):
         Station, related_name="route_source", on_delete=models.CASCADE
     )
     stop_station = models.ManyToManyField(
-        Station, related_name="route", blank=True, null=True
+        Station, related_name="route", blank=True
     )
     destination = models.ForeignKey(
         Station, related_name="route_destination", on_delete=models.CASCADE
