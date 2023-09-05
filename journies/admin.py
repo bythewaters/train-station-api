@@ -24,8 +24,9 @@ class TrainAdmin(ModelAdmin):
         "crew_names",
     )
     ordering = ("train", "departure_time", "arrival_time")
+    filter_horizontal = ("crew",)
 
     def crew_names(self, obj: Journey) -> str:
         return ", ".join([str(crew) for crew in obj.crew.all()])
 
-    crew_names.short_description = "Journey"
+    crew_names.short_description = "Crew"

@@ -38,4 +38,4 @@ class TrainAdmin(ModelAdmin):
             [str(station) for station in obj.stop_station.all()]
         )
 
-    stop_stations_names.short_description = "Route"
+    stop_stations_names.short_description = "Stop stations"

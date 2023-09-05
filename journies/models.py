@@ -33,6 +33,9 @@ class Journey(models.Model):
         arrival_time type datetime
         """
         duration = self.route.distance / (self.train.train_type.max_speed // 1.5)
+        if self.route.stop_station:
+            for station in self.route.stop_station.all():
+                duration += station.stop_time / 60
         journey_duration = timedelta(hours=duration)
         arrival_time = self.departure_time + journey_duration
         return arrival_time

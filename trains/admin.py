@@ -10,9 +10,9 @@ class TrainTypeAdmin(ModelAdmin):
     ordering = ("name",)
     filter_horizontal = ("services",)
 
-    def service_names(self, obj):
+    def service_names(self, obj: TrainType) -> str:
         return ", ".join(
-            [str(p) for p in obj.services.all()]
+            [str(service) for service in obj.services.all()]
         )
 
     service_names.short_description = "Services"
