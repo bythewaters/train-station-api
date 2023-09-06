@@ -31,7 +31,7 @@ class Journey(models.Model):
     crew = models.ManyToManyField(Crew, related_name="journey")
     departure_time = models.DateTimeField()
     arrival_time = models.DateTimeField(blank=True, null=True)
-    trip_price = models.FloatField()
+    trip_price = models.FloatField(blank=True, null=True)
 
     def calculate_trip_price(self) -> float:
         """
@@ -66,7 +66,7 @@ class Journey(models.Model):
         if self.route and self.train and self.departure_time:
             self.arrival_time = self.calculate_arrival_time()
         if not self.trip_price:
-            self.trip_price = self.calculate_trip_price()
+            self.trip_price = round(self.calculate_trip_price())
         super().save(*args, **kwargs)
 
     @staticmethod
