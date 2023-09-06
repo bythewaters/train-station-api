@@ -61,14 +61,6 @@ class Journey(models.Model):
         arrival_time = self.departure_time + journey_duration
         return arrival_time
 
-    def save(self, *args, **kwargs) -> None:
-        self.clean()
-        if self.route and self.train and self.departure_time:
-            self.arrival_time = self.calculate_arrival_time()
-        if not self.trip_price:
-            self.trip_price = round(self.calculate_trip_price())
-        super().save(*args, **kwargs)
-
     @staticmethod
     def validate_date(
         departure_time: datetime,
@@ -81,6 +73,14 @@ class Journey(models.Model):
         super().clean()
         if self.departure_time <= timezone.now():
             raise ValidationError("Departure time must be in the future.")
+
+    def save(self, *args, **kwargs) -> None:
+        self.clean()
+        if self.route and self.train and self.departure_time:
+            self.arrival_time = self.calculate_arrival_time()
+        if not self.trip_price:
+            self.trip_price = round(self.calculate_trip_price())
+        super().save(*args, **kwargs)
 
     def __str__(self) -> str:
         return (f"{self.route.source.name} - "
