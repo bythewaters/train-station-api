@@ -30,18 +30,17 @@ class Ticket(models.Model):
 
     @staticmethod
     def validate_ticket(cargo, seat, journey, error_to_raise):
-        for ticket_attr_value, ticket_attr_name, journey_attr_name in [
-            (cargo, "cargo", "cargos"),
-            (seat, "seat", "seats_in_cargo"),
+        for ticket_attr_value, ticket_attr_name, train_attr_name in [
+            (cargo, "cargo", "cargo_num"),
+            (seat, "seat", "places_in_cargo"),
         ]:
-            count_attrs = getattr(journey, journey_attr_name)
+            count_attrs = getattr(journey, train_attr_name)
             if not (1 <= ticket_attr_value <= count_attrs):
                 raise error_to_raise(
                     {
                         ticket_attr_name: f"{ticket_attr_name} "
                         f"number must be in available range: "
-                        f"(1, {journey_attr_name}): "
-                        f"(1, {count_attrs})"
+                        f"(from 1 to {count_attrs})"
                     }
                 )
 
