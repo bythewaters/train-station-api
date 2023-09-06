@@ -1,5 +1,5 @@
 from django.db import models
-from rest_framework.exceptions import ValidationError
+from django.core.validators import ValidationError
 
 from journies.models import Journey
 from train_station_api import settings

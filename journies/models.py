@@ -3,7 +3,7 @@ from typing import Type
 
 from django.db import models
 from django.utils import timezone
-from rest_framework.exceptions import ValidationError
+from django.core.validators import ValidationError
 
 from routes.models import Route
 from trains.models import Train
