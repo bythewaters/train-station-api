@@ -3,7 +3,17 @@ from rest_framework import serializers
 from trains.models import TrainType, Train, Service
 
 
+class ServiceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Service
+        fields = [
+            "name",
+        ]
+
+
 class TrainTypeSerializer(serializers.ModelSerializer):
+    services = ServiceSerializer(many=True, read_only=True)
+
     class Meta:
         model = TrainType
         fields = [
@@ -14,6 +24,10 @@ class TrainTypeSerializer(serializers.ModelSerializer):
 
 
 class TrainSerializer(serializers.ModelSerializer):
+    train_type = serializers.CharField(
+        source="train_type.name", read_only=True
+    )
+
     class Meta:
         model = Train
         fields = [
@@ -22,13 +36,4 @@ class TrainSerializer(serializers.ModelSerializer):
             "cargo_num",
             "places_in_cargo",
             "train_type",
-        ]
-
-
-class ServiceSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Service
-        fields = [
-            "id",
-            "name",
         ]
