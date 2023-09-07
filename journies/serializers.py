@@ -3,7 +3,7 @@ from rest_framework import serializers
 from journies.models import Journey, Crew
 from orders.serializer import TicketSeatsSerializer
 from routes.serializers import StationSerializer, RouteSerializer
-from trains.serializers import TrainTypeSerializer, TrainSerializer
+from trains.serializers import TrainSerializer
 
 
 class CrewSerializer(serializers.ModelSerializer):
