@@ -1,5 +1,6 @@
 from typing import Type
 
+from django.db.models import Count, QuerySet, F
 from rest_framework import viewsets, permissions
 from rest_framework.serializers import Serializer
 
@@ -21,6 +22,14 @@ class JourneyView(viewsets.ModelViewSet):
     queryset = Journey.objects.all()
     serializer_class = JourneySerializer
     permission_classes = (permissions.IsAdminUser,)
+
+    def get_queryset(self) -> QuerySet:
+        queryset = self.queryset
+        if self.action == "list":
+            queryset = queryset.select_related("train").annotate(
+                tickets_available=F("train__places_in_cargo") - Count("ticket")
+            )
+        return queryset
 
     def get_serializer_class(self) -> Type[Serializer]:
         if self.action == "retrieve":

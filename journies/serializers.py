@@ -19,6 +19,9 @@ class CrewSerializer(serializers.ModelSerializer):
 
 class JourneySerializer(serializers.ModelSerializer):
     route = RouteSerializer(many=False, read_only=True)
+    tickets_available = serializers.IntegerField(
+        read_only=True
+    )
 
     class Meta:
         model = Journey
@@ -27,6 +30,7 @@ class JourneySerializer(serializers.ModelSerializer):
             "route",
             "departure_time",
             "arrival_time",
+            "tickets_available",
         ]
 
     def validate(self, validated_data: dict) -> dict:
