@@ -25,7 +25,7 @@ class Ticket(models.Model):
         Journey, on_delete=models.CASCADE, related_name="ticket"
     )
     order = models.ForeignKey(
-        Order, on_delete=models.CASCADE, related_name="ticket"
+        Order, on_delete=models.CASCADE, related_name="tickets"
     )
 
     @staticmethod
