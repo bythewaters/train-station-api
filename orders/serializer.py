@@ -6,25 +6,29 @@ from orders.models import Ticket, Order
 
 
 class TicketSerializer(serializers.ModelSerializer):
+    trip_price = serializers.IntegerField(
+        source="journey.trip_price", read_only=True
+    )
+
     def validate(self, attrs):
         data = super(TicketSerializer, self).validate(attrs=attrs)
         Ticket.validate_ticket(
             attrs["cargo"],
             attrs["seat"],
             attrs["journey"].train,
-            ValidationError
+            ValidationError,
         )
         return data
 
     class Meta:
         model = Ticket
-        fields = ("id", "cargo", "seat", "movie_session")
+        fields = ("id", "cargo", "seat", "journey", "trip_price")
 
 
 class TicketSeatsSerializer(TicketSerializer):
     class Meta:
         model = Ticket
-        fields = ("cargo", "seat")
+        fields = ("cargo", "seat", "journey")
 
 
 class OrderSerializer(serializers.ModelSerializer):
