@@ -9,7 +9,7 @@ class FeedBackAdmin(ModelAdmin):
     list_display = (
         "status",
         "type",
-        "ticket",
+        "order",
         "session_url",
         "session_id",
         "money_to_pay",

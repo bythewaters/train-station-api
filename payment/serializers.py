@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from orders.serializer import TicketSerializer
+from orders.serializer import OrderSerializer
 from payment.models import Payment
 
 
@@ -11,7 +11,7 @@ class PaymentListSerializer(serializers.ModelSerializer):
             "id",
             "status",
             "type",
-            "ticket",
+            "order",
             "session_url",
             "session_id",
             "money_to_pay",
@@ -19,7 +19,7 @@ class PaymentListSerializer(serializers.ModelSerializer):
 
 
 class PaymentDetailSerializer(PaymentListSerializer):
-    borrowing = TicketSerializer(read_only=True)
+    order = OrderSerializer(read_only=True)
 
     class Meta:
         model = Payment
@@ -27,7 +27,7 @@ class PaymentDetailSerializer(PaymentListSerializer):
             "id",
             "status",
             "type",
-            "ticket",
+            "order",
             "session_url",
             "session_id",
             "money_to_pay",

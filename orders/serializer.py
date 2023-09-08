@@ -47,16 +47,16 @@ class OrderSerializer(serializers.ModelSerializer):
         for ticket_data in tickets_data:
             Ticket.objects.create(order=order, **ticket_data)
 
-        session_url, session_id, ticket_cost = create_payment_session(order)
+        session_url, session_id, all_tickets_price = create_payment_session(order)
         Payment.objects.create(
             status="PENDING",
             type="PAYMENT",
             order=order,
             session_url=session_url,
             session_id=session_id,
-            money_to_pay=ticket_cost,
+            money_to_pay=all_tickets_price,
         )
-
+        return order
 
 
 class OrderListSerializer(OrderSerializer):
