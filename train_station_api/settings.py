@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     "routes",
     "journies",
     "orders",
+    "payment",
 ]
 
 MIDDLEWARE = [
@@ -197,3 +198,11 @@ SPECTACULAR_SETTINGS = {
         "defaultModelExpandDepth": 2,
     },
 }
+
+
+# stripe
+STRIPE_SECRET_KEY = os.getenv("STRIPE_SECRET_KEY")
+
+# front-end URL
+PAYMENT_SUCCESS_URL = os.getenv("PAYMENT_SUCCESS_URL")
+PAYMENT_FAILED_URL = os.getenv("PAYMENT_FAILED_URL")
