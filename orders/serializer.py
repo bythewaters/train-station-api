@@ -3,6 +3,8 @@ from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
 from orders.models import Ticket, Order
+from payment.models import Payment
+from payment.payment_session import create_payment_session
 
 
 class TicketSerializer(serializers.ModelSerializer):
@@ -38,13 +40,23 @@ class OrderSerializer(serializers.ModelSerializer):
         model = Order
         fields = ("id", "tickets", "created_time")
 
+    @transaction.atomic
     def create(self, validated_data):
-        with transaction.atomic():
-            tickets_data = validated_data.pop("tickets")
-            order = Order.objects.create(**validated_data)
-            for ticket_data in tickets_data:
-                Ticket.objects.create(order=order, **ticket_data)
-            return order
+        tickets_data = validated_data.pop("tickets")
+        order = Order.objects.create(**validated_data)
+        for ticket_data in tickets_data:
+            Ticket.objects.create(order=order, **ticket_data)
+
+        session_url, session_id, ticket_cost = create_payment_session(order)
+        Payment.objects.create(
+            status="PENDING",
+            type="PAYMENT",
+            order=order,
+            session_url=session_url,
+            session_id=session_id,
+            money_to_pay=ticket_cost,
+        )
+
 
 
 class OrderListSerializer(OrderSerializer):
