@@ -57,6 +57,7 @@ class JourneyDetailSerializer(JourneySerializer):
             "departure_time",
             "arrival_time",
             "route",
+            "distance",
             "station",
             "train",
             "taken_seats",

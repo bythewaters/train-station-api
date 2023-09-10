@@ -32,6 +32,21 @@ class Journey(models.Model):
     departure_time = models.DateTimeField()
     arrival_time = models.DateTimeField(blank=True, null=True)
     trip_price = models.FloatField(blank=True, null=True)
+    distance = models.IntegerField(null=True, blank=True)
+
+    def calculate_distance(self) -> int:
+        """
+        Calculate distance between 2 stations
+        :return:
+        distance type int
+        """
+        next_station = self.route.source
+        distance = 0
+        for stop_station in self.route.stop_station.all():
+            distance += next_station.coordinate.distance(stop_station.coordinate)
+            next_station = stop_station
+        distance += next_station.coordinate.distance(self.route.destination.coordinate)
+        return distance * 100
 
     def calculate_trip_price(self) -> float:
         """
@@ -41,7 +56,7 @@ class Journey(models.Model):
         """
         price_services = len(self.train.train_type.services.all()) * 0.2
         price_without_tax = (
-            self.route.distance * TRIP_PRICE_PER_ONE_KM + price_services
+            self.distance * TRIP_PRICE_PER_ONE_KM + price_services
         )
         return price_without_tax + price_without_tax * TAX
 
@@ -51,7 +66,7 @@ class Journey(models.Model):
         :return:
         arrival_time type datetime
         """
-        duration = self.route.distance / (
+        duration = self.distance / (
             self.train.train_type.max_speed // 1.5
         )
         if self.route.stop_station:
@@ -76,6 +91,8 @@ class Journey(models.Model):
 
     def save(self, *args, **kwargs) -> None:
         self.clean()
+        if self.route.source and self.route.destination:
+            self.distance = self.calculate_distance()
         if self.route and self.train and self.departure_time:
             self.arrival_time = self.calculate_arrival_time()
         if not self.trip_price:

@@ -5,7 +5,7 @@ from journies.models import Crew, Journey
 
 
 @admin.register(Crew)
-class TrainAdmin(ModelAdmin):
+class CrewAdmin(ModelAdmin):
     list_display = (
         "first_name",
         "last_name",
@@ -15,12 +15,13 @@ class TrainAdmin(ModelAdmin):
 
 
 @admin.register(Journey)
-class TrainAdmin(ModelAdmin):
+class JourneyAdmin(ModelAdmin):
     list_display = (
         "route",
         "train",
         "departure_time",
         "arrival_time",
+        "distance",
         "crew_names",
     )
     ordering = ("train", "departure_time", "arrival_time")
