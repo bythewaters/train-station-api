@@ -1,10 +1,13 @@
 from django.db import transaction
+from django.utils import timezone
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
+from notifications.email_notifications import send_email_notifications
 from orders.models import Ticket, Order
 from payment.models import Payment
 from payment.payment_session import create_payment_session
+from users.models import User
 
 
 class TicketSerializer(serializers.ModelSerializer):
@@ -44,10 +47,24 @@ class OrderSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         tickets_data = validated_data.pop("tickets")
         order = Order.objects.create(**validated_data)
-        for ticket_data in tickets_data:
-            Ticket.objects.create(order=order, **ticket_data)
-
         session_url, session_id, all_tickets_price = create_payment_session(order)
+        for ticket_data in tickets_data:
+            ticket = Ticket.objects.create(order=order, **ticket_data)
+            send_email_notifications(
+                subject="info@cd.cz",
+                message="Dear Customer,\n"
+                        "Thank you for using our services.\n "
+                        "Please find attached the purchased travel document(s).\n"
+                        f"Item: {ticket.journey.__str__()}\n"
+                        f"Order No. {order.id}\n"
+                        f"Transaction Code: {session_id[5:10].upper()}\n"
+                        f"Cargo: {ticket_data['cargo']}\n"
+                        f"Seat: {ticket_data['seat']}\n"
+                        f"Date of issue: {timezone.now().date()}\n"
+                        f"Date of validity: {ticket.journey.departure_time.date()}\n"
+                        f"Price: {ticket.journey.trip_price} USD",
+                recipient=(User.objects.get(id=order.user_id).email,),
+            )
         Payment.objects.create(
             status="PENDING",
             type="PAYMENT",

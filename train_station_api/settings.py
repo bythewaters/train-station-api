@@ -206,3 +206,12 @@ STRIPE_SECRET_KEY = os.getenv("STRIPE_SECRET_KEY")
 # front-end URL
 PAYMENT_SUCCESS_URL = os.getenv("PAYMENT_SUCCESS_URL")
 PAYMENT_FAILED_URL = os.getenv("PAYMENT_FAILED_URL")
+
+# email notification settings
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
