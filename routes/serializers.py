@@ -58,5 +58,4 @@ class RouteSerializer(serializers.ModelSerializer):
             "id",
             "source_info",
             "destination_info",
-            "distance",
         ]

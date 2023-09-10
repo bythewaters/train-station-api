@@ -31,6 +31,9 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+INTERNAL_IPS = [
+    "127.0.0.1",
+]
 
 # Application definition
 
@@ -98,13 +101,6 @@ DATABASES = {
         "PORT": "5432",
     }
 }
-# DATABASES = {
-#     "default": {
-#         "ENGINE": "django.db.backends.sqlite3",
-#         "NAME": BASE_DIR / "db.sqlite3",
-#     }
-# }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
@@ -152,17 +148,6 @@ STATIC_URL = "static/"
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
-
-# LEAFLET_CONFIG = {
-#     # "SPATIAL_EXTENT": (5.0, 44.0, 7.5, 46),
-#     "DEFAULT_CENTER": "13.3888599 52.5170365",  # set your corordinate
-#     "DEFAULT_ZOOM": 16,
-#     "MIN_ZOOM": 3,
-#     "MAX_ZOOM": 20,
-#     "DEFAULT_PRECISION": 6,
-#     "SCALE": "both",
-#     "ATTRIBUTION_PREFIX": "anshu is cool",
-# }
 
 REST_FRAMEWORK = {
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",

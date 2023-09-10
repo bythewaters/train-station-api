@@ -19,7 +19,11 @@ class CrewView(viewsets.ModelViewSet):
 
 
 class JourneyView(viewsets.ModelViewSet):
-    queryset = Journey.objects.all()
+    queryset = (
+        Journey.objects.all()
+        .select_related("route__source", "route__destination", "train")
+        .prefetch_related("crew__journey")
+    )
     serializer_class = JourneySerializer
     permission_classes = (permissions.IsAuthenticated,)
 

@@ -36,12 +36,12 @@ class StationListView(viewsets.ModelViewSet):
                 lon, lat = map(float, coordinate.split(","))
                 point = Point(float(lon), float(lat), srid=4326)
             except ValueError:
-                raise ValidationError("You must set geom in format: 'number,number'")
+                raise ValidationError(
+                    "You must set geom in format: 'number,number'"
+                )
             return queryset.annotate(
                 distance=DistanceFunc("coordinate", point)
-            ).order_by(
-                "distance"
-            )[:1]
+            ).order_by("distance")[:1]
         return queryset
 
     def perform_create(self, serializer: StationSerializer) -> None:
@@ -59,15 +59,20 @@ class StationListView(viewsets.ModelViewSet):
                 "coordinate",
                 type=OpenApiTypes.STR,
                 description="finding the nearest station to "
-                            "the entered coordinates "
-                            "ex.(?coordinate=56.3443,30.4343)",
-            )]
+                "the entered coordinates "
+                "ex.(?coordinate=56.3443,30.4343)",
+            )
+        ]
     )
     def list(self, request: Request, *args, **kwargs) -> list:
         return super().list(request, *args, **kwargs)
 
 
 class RouteView(viewsets.ModelViewSet):
-    queryset = Route.objects.all()
+    queryset = (
+        Route.objects.all()
+        .select_related("source", "destination")
+        .prefetch_related("stop_station__route")
+    )
     serializer_class = RouteSerializer
     permission_classes = (permissions.IsAdminUser,)
