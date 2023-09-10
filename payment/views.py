@@ -56,7 +56,7 @@ class PaymentViewSet(
                 "status": "error",
                 "message": "Payment not success",
             },
-            status=status.HTTP_400_BAD_REQUEST
+            status=status.HTTP_400_BAD_REQUEST,
         )
 
     @action(
@@ -73,7 +73,7 @@ class PaymentViewSet(
                 {
                     "status": "Cancel payment",
                     "message": "You can be paid a bit later "
-                               "(but the session is available for only 24h)",
+                    "(but the session is available for only 24h)",
                 },
-                status=status.HTTP_303_SEE_OTHER
+                status=status.HTTP_303_SEE_OTHER,
             )
