@@ -19,6 +19,7 @@ class TrainTypeSerializer(serializers.ModelSerializer):
         fields = [
             "id",
             "name",
+            "max_speed",
             "services",
         ]
 
