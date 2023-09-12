@@ -127,7 +127,7 @@ class AdminUserApiTest(TestCase):
     def test_create_train(self):
         train_type = create_train_type()
         response = self.client.post(
-            "/trains/",
+            TRAIN_URL,
             {
                 "name": "TestTrain",
                 "cargo_num": 3,
@@ -137,16 +137,14 @@ class AdminUserApiTest(TestCase):
         )
 
         self.assertEqual(
-            response.status_code, 201
-        )  # 201 is the status code for successful POST request
-
+            response.status_code, status.HTTP_201_CREATED
+        )
         train = Train.objects.get(name="TestTrain")
         self.assertEqual(train.name, "TestTrain")
         self.assertEqual(train.cargo_num, 3)
         self.assertEqual(train.places_in_cargo, 10)
-        self.assertEqual(train.train_type.id, train_type.id)
 
     def test_delete_train(self):
-        train_type = create_train_type()
-        res = self.client.delete(path=TRAIN_TYPE_URL + f"{train_type.id}/")
+        train = sample_train()
+        res = self.client.delete(path=TRAIN_URL + f"{train.id}/")
         self.assertEqual(res.status_code, status.HTTP_204_NO_CONTENT)

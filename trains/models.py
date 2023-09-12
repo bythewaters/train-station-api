@@ -24,7 +24,7 @@ class Train(models.Model):
     cargo_num = models.IntegerField()
     places_in_cargo = models.IntegerField()
     train_type = models.ForeignKey(
-        TrainType, on_delete=models.CASCADE, related_name="train"
+        TrainType, on_delete=models.CASCADE, related_name="train", null=True
     )
 
     def __str__(self) -> str:
