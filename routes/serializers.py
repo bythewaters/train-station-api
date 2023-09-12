@@ -39,12 +39,23 @@ class StationSerializer(serializers.ModelSerializer):
         return None
 
 
+class StationNameSerializer(StationSerializer):
+    class Meta:
+        model = Station
+        fields = [
+            "id",
+            "name",
+        ]
+
+
 class RouteSerializer(serializers.ModelSerializer):
+    source_info = serializers.CharField(source="source.name", read_only=True)
+    destination_info = serializers.CharField(source="destination.name", read_only=True)
+
     class Meta:
         model = Route
         fields = [
             "id",
-            "source",
-            "destination",
-            "distance",
+            "source_info",
+            "destination_info",
         ]

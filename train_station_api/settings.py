@@ -10,8 +10,11 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 import os
+import sys
 from datetime import timedelta
 from pathlib import Path
+
+from celery.schedules import crontab
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -27,10 +30,13 @@ GEOS_LIBRARY_PATH = os.getenv("GEOS_LIBRARY_PATH")
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["127.0.0.1"]
 
+INTERNAL_IPS = [
+    "127.0.0.1",
+]
 
 # Application definition
 
@@ -45,9 +51,13 @@ INSTALLED_APPS = [
     "rest_framework",
     "drf_spectacular",
     "debug_toolbar",
+    "django_celery_beat",
     "users",
     "trains",
     "routes",
+    "journies",
+    "orders",
+    "payment",
 ]
 
 MIDDLEWARE = [
@@ -95,13 +105,6 @@ DATABASES = {
         "PORT": "5432",
     }
 }
-# DATABASES = {
-#     "default": {
-#         "ENGINE": "django.db.backends.sqlite3",
-#         "NAME": BASE_DIR / "db.sqlite3",
-#     }
-# }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
@@ -133,7 +136,7 @@ AUTH_USER_MODEL = "users.User"
 
 LANGUAGE_CODE = "en-us"
 
-TIME_ZONE = "UTC"
+TIME_ZONE = "Europe/Prague"
 
 USE_I18N = True
 
@@ -149,17 +152,6 @@ STATIC_URL = "static/"
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
-
-# LEAFLET_CONFIG = {
-#     # "SPATIAL_EXTENT": (5.0, 44.0, 7.5, 46),
-#     "DEFAULT_CENTER": "13.3888599 52.5170365",  # set your corordinate
-#     "DEFAULT_ZOOM": 16,
-#     "MIN_ZOOM": 3,
-#     "MAX_ZOOM": 20,
-#     "DEFAULT_PRECISION": 6,
-#     "SCALE": "both",
-#     "ATTRIBUTION_PREFIX": "anshu is cool",
-# }
 
 REST_FRAMEWORK = {
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
@@ -195,3 +187,38 @@ SPECTACULAR_SETTINGS = {
         "defaultModelExpandDepth": 2,
     },
 }
+
+CELERY_BEAT_SCHEDULE = {
+    "task-name": {
+        "task": "journies.tasks.check_valid_trip",
+        "schedule": crontab("*/1 * * * *"),
+    },
+}
+
+# stripe
+STRIPE_SECRET_KEY = os.getenv("STRIPE_SECRET_KEY")
+
+# front-end URL
+PAYMENT_SUCCESS_URL = os.getenv("PAYMENT_SUCCESS_URL")
+PAYMENT_FAILED_URL = os.getenv("PAYMENT_FAILED_URL")
+
+# email notification settings
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
+# Celery Configuration Options
+CELERY_BROKER_URL = os.getenv("CELERY_BROKER_URL")
+CELERY_RESULT_BACKEND = os.getenv("CELERY_RESULT_BACKEND")
+CELERY_TIMEZONE = "Europe/Prague"
+CELERY_TASK_TRACK_STARTED = True
+CELERY_TASK_TIME_LIMIT = 30 * 60
+CELERY_WORKER_MAX_TASKS_PER_CHILD = 100
+CELERY_IGNORE_RESULT = True
+CELERY_WORKER_PREFETCH_MULTIPLIER = 100
+CELERYD_TASK_SOFT_TIME_LIMIT = 60 * 60 * 12
+CELERYD_TASK_TIME_LIMIT = 60 * 60 * 13
