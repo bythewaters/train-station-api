@@ -6,7 +6,7 @@ from routes.views import RouteView, StationListView
 router = routers.DefaultRouter()
 router.register("all", RouteView)
 router.register("stations", StationListView)
-print(router.urls)
+
 urlpatterns = [path("", include(router.urls))]
 
 app_name = "routes"

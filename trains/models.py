@@ -12,7 +12,7 @@ class TrainType(models.Model):
     name = models.CharField(max_length=255, unique=True)
     max_speed = models.IntegerField()
     services = models.ManyToManyField(
-        Service, related_name="train_type", null=True
+        Service, related_name="train_type"
     )
 
     def __str__(self) -> str:
