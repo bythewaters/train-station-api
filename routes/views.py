@@ -27,7 +27,8 @@ class StationListView(viewsets.ModelViewSet):
         Returns:
             QuerySet[Station]: The filtered queryset of stations.
         Raises:
-            ValidationError: If the coordinate is not provided in the correct format.
+            ValidationError:
+            If the coordinate is not provided in the correct format.
         """
         queryset = self.queryset
         coordinate = self.request.query_params.get("coordinate", None)

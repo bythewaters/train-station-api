@@ -8,7 +8,11 @@ from rest_framework.test import APIClient
 from django.urls import reverse
 
 from trains.models import Service, TrainType, Train
-from trains.serializers import ServiceSerializer, TrainTypeSerializer, TrainSerializer
+from trains.serializers import (
+    ServiceSerializer,
+    TrainTypeSerializer,
+    TrainSerializer,
+)
 
 TRAIN_URL = reverse("trains:train-list")
 TRAIN_TYPE_URL = reverse("trains:traintype-list")
@@ -33,7 +37,7 @@ def sample_train():
         name="TrainTest",
         cargo_num=10,
         places_in_cargo=30,
-        train_type_id=create_train_type().id
+        train_type_id=create_train_type().id,
     )
     return train
 
@@ -136,9 +140,7 @@ class AdminUserApiTest(TestCase):
             },
         )
 
-        self.assertEqual(
-            response.status_code, status.HTTP_201_CREATED
-        )
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         train = Train.objects.get(name="TestTrain")
         self.assertEqual(train.name, "TestTrain")
         self.assertEqual(train.cargo_num, 3)

@@ -108,13 +108,10 @@ class AuthenticatedUserApiTest(TestCase):
         serializer = JourneySerializer(journey, many=True)
         res_data_copy = copy.deepcopy(res.data)
         serializer_data_copy = copy.deepcopy(serializer.data)
-
         for data in res_data_copy:
             data.pop("tickets_available", None)
-        
         for data in serializer_data_copy:
             data.pop("tickets_available", None)
-        
         self.assertEqual(res_data_copy, serializer_data_copy)
         self.assertEqual(res.status_code, status.HTTP_200_OK)
 
@@ -203,16 +200,22 @@ class AdminUserApiTest(TestCase):
         next_station = source
         curr_distance = 0
         for stop_station in stop_station.all():
-            curr_distance += next_station.coordinate.distance(stop_station.coordinate)
+            curr_distance += next_station.coordinate.distance(
+                stop_station.coordinate
+            )
             next_station = stop_station
-        curr_distance += next_station.coordinate.distance(destination.coordinate)
+        curr_distance += next_station.coordinate.distance(
+            destination.coordinate
+        )
 
         self.assertEqual(curr_distance * 100, journey.distance)
 
     def test_calculate_journey_price(self):
         journey = create_journey()
         price_services = len(journey.train.train_type.services.all()) * 0.2
-        price_without_tax = journey.distance * TRIP_PRICE_PER_ONE_KM + price_services
+        price_without_tax = (
+            journey.distance * TRIP_PRICE_PER_ONE_KM + price_services
+        )
         curr_price = round(price_without_tax + price_without_tax * TAX, 2)
 
         self.assertEqual(curr_price, journey.trip_price)
@@ -220,7 +223,7 @@ class AdminUserApiTest(TestCase):
     def test_calculate_arrival_time(self):
         journey = create_journey()
         duration = journey.distance / (
-                journey.train.train_type.max_speed // 1.5
+            journey.train.train_type.max_speed // 1.5
         )
         if journey.route.stop_station:
             for station in journey.route.stop_station.all():

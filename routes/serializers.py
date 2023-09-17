@@ -22,9 +22,11 @@ class StationSerializer(serializers.ModelSerializer):
         Args:
             obj: The object for which to get the Point geometry.
         Returns:
-            Point | None: The Point geometry if coordinates are provided, otherwise None.
+            Point | None: The Point geometry
+            if coordinates are provided, otherwise None.
         Raises:
-            serializers.ValidationError: If the coordinates are not in the correct format.
+            serializers.ValidationError:
+            If the coordinates are not in the correct format.
         """
 
         coordinates = self.context["request"].data.get("coordinate")
@@ -50,7 +52,9 @@ class StationNameSerializer(StationSerializer):
 
 class RouteSerializer(serializers.ModelSerializer):
     source_info = serializers.CharField(source="source.name", read_only=True)
-    destination_info = serializers.CharField(source="destination.name", read_only=True)
+    destination_info = serializers.CharField(
+        source="destination.name", read_only=True
+    )
 
     class Meta:
         model = Route

@@ -43,9 +43,13 @@ class Journey(models.Model):
         next_station = self.route.source
         distance = 0
         for stop_station in self.route.stop_station.all():
-            distance += next_station.coordinate.distance(stop_station.coordinate)
+            distance += next_station.coordinate.distance(
+                stop_station.coordinate
+            )
             next_station = stop_station
-        distance += next_station.coordinate.distance(self.route.destination.coordinate)
+        distance += next_station.coordinate.distance(
+            self.route.destination.coordinate
+        )
         return distance * 100
 
     def __calculate_trip_price(self) -> float:
@@ -66,9 +70,7 @@ class Journey(models.Model):
         :return:
         arrival_time type datetime
         """
-        duration = self.distance / (
-            self.train.train_type.max_speed // 1.5
-        )
+        duration = self.distance / (self.train.train_type.max_speed // 1.5)
         if self.route.stop_station:
             for station in self.route.stop_station.all():
                 duration += station.stop_time / 60
@@ -100,5 +102,4 @@ class Journey(models.Model):
         super().save(*args, **kwargs)
 
     def __str__(self) -> str:
-        return (f"{self.route.source.name} - "
-                f"{self.route.destination.name}")
+        return f"{self.route.source.name} - " f"{self.route.destination.name}"

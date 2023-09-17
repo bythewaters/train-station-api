@@ -9,8 +9,6 @@ def check_valid_trip(self):
     try:
         with transaction.atomic():
             today = timezone.now()
-            Journey.objects.filter(
-                departure_time__lte=today
-            )[:100].delete()
+            Journey.objects.filter(departure_time__lte=today)[:100].delete()
     except Exception as e:
-        self.retry(exc=e, countdown=60*5, max_retries=5)
+        self.retry(exc=e, countdown=60 * 5, max_retries=5)
