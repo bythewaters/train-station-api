@@ -23,4 +23,4 @@ class Route(models.Model):
     )
 
     def __str__(self) -> str:
-        return f"{self.source} - {self.destination}"
+        return f"{self.source.name} - {self.destination.name}"
