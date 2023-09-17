@@ -62,3 +62,15 @@ class JourneyDetailSerializer(JourneySerializer):
             "train",
             "taken_seats",
         )
+
+
+class JourneyCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Journey
+        fields = [
+            "id",
+            "route",
+            "train",
+            "crew",
+            "departure_time",
+        ]

@@ -5,17 +5,19 @@ from rest_framework import viewsets, permissions
 from rest_framework.serializers import Serializer
 
 from journies.models import Crew, Journey
+from journies.permissions import IsAdminOrReadOnly
 from journies.serializers import (
     CrewSerializer,
     JourneySerializer,
     JourneyDetailSerializer,
+    JourneyCreateSerializer,
 )
 
 
 class CrewView(viewsets.ModelViewSet):
     queryset = Crew.objects.all()
     serializer_class = CrewSerializer
-    permission_classes = (permissions.IsAuthenticated,)
+    permission_classes = (IsAdminOrReadOnly,)
 
 
 class JourneyView(viewsets.ModelViewSet):
@@ -25,7 +27,7 @@ class JourneyView(viewsets.ModelViewSet):
         .prefetch_related("crew__journey")
     )
     serializer_class = JourneySerializer
-    permission_classes = (permissions.IsAuthenticated,)
+    permission_classes = (IsAdminOrReadOnly,)
 
     def get_queryset(self) -> QuerySet:
         queryset = self.queryset
@@ -38,4 +40,6 @@ class JourneyView(viewsets.ModelViewSet):
     def get_serializer_class(self) -> Type[Serializer]:
         if self.action == "retrieve":
             return JourneyDetailSerializer
+        if self.action == "create":
+            return JourneyCreateSerializer
         return JourneySerializer
