@@ -47,11 +47,12 @@ class OrderSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         tickets_data = validated_data.pop("tickets")
         order = Order.objects.create(**validated_data)
+        for ticket_data in tickets_data:
+            Ticket.objects.create(order=order, **ticket_data)
         session_url, session_id, all_tickets_price = create_payment_session(
             order
         )
-        for ticket_data in tickets_data:
-            ticket = Ticket.objects.create(order=order, **ticket_data)
+        for ticket in Ticket.objects.all():
             send_email_notifications(
                 subject="info@cd.cz",
                 message="Dear Customer,\n"
@@ -60,8 +61,8 @@ class OrderSerializer(serializers.ModelSerializer):
                 f"Item: {ticket.journey.__str__()}\n"
                 f"Order No. {order.id}\n"
                 f"Transaction Code: {session_id[5:10].upper()}\n"
-                f"Cargo: {ticket_data['cargo']}\n"
-                f"Seat: {ticket_data['seat']}\n"
+                f"Cargo: {ticket.cargo}\n"
+                f"Seat: {ticket.seat}\n"
                 f"Date of issue: {timezone.now().date()}\n"
                 f"Date of validity: {ticket.journey.departure_time.date()}\n"
                 f"Price: {ticket.journey.trip_price} USD",
