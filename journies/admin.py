@@ -21,10 +21,11 @@ class JourneyAdmin(ModelAdmin):
         "train",
         "departure_time",
         "arrival_time",
+        "trip_price",
         "distance",
         "crew_names",
     )
-    ordering = ("train", "departure_time", "arrival_time")
+    ordering = ("train", "trip_price", "departure_time", "arrival_time")
     filter_horizontal = ("crew",)
 
     def crew_names(self, obj: Journey) -> str:

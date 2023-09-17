@@ -30,6 +30,7 @@ class JourneySerializer(serializers.ModelSerializer):
             "route",
             "departure_time",
             "arrival_time",
+            "trip_price",
             "tickets_available",
         ]
 
