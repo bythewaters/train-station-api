@@ -34,7 +34,7 @@ class Journey(models.Model):
     trip_price = models.FloatField(blank=True, null=True)
     distance = models.IntegerField(null=True, blank=True)
 
-    def calculate_distance(self) -> int:
+    def __calculate_distance(self) -> int:
         """
         Calculate distance between 2 stations
         :return:
@@ -48,7 +48,7 @@ class Journey(models.Model):
         distance += next_station.coordinate.distance(self.route.destination.coordinate)
         return distance * 100
 
-    def calculate_trip_price(self) -> float:
+    def __calculate_trip_price(self) -> float:
         """
         Auto calculate journey price
         :return:
@@ -60,7 +60,7 @@ class Journey(models.Model):
         )
         return price_without_tax + price_without_tax * TAX
 
-    def calculate_arrival_time(self) -> datetime:
+    def __calculate_arrival_time(self) -> datetime:
         """
         Auto calculate approximately arrival time train
         :return:
@@ -92,11 +92,11 @@ class Journey(models.Model):
     def save(self, *args, **kwargs) -> None:
         self.clean()
         if self.route.source and self.route.destination:
-            self.distance = self.calculate_distance()
+            self.distance = self.__calculate_distance()
         if self.route and self.train and self.departure_time:
-            self.arrival_time = self.calculate_arrival_time()
+            self.arrival_time = self.__calculate_arrival_time()
         if not self.trip_price:
-            self.trip_price = round(self.calculate_trip_price())
+            self.trip_price = round(self.__calculate_trip_price(), 2)
         super().save(*args, **kwargs)
 
     def __str__(self) -> str:
