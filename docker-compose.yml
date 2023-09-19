@@ -32,43 +32,43 @@ services:
       - .env
     depends_on:
       - db
-#
-#  celery:
-#    build:
-#      context: .
-#      dockerfile: Dockerfile
-#    command: "celery -A train_station worker -l info"
-#    depends_on:
-#      - app
-#      - redis
-#      - db
-#    restart: on-failure
-#    env_file:
-#      - .env
-#
-#  celery-beat:
-#    build:
-#      context: .
-#      dockerfile: Dockerfile
-#    command: >
-#            sh -c "python manage.py wait_for_db &&
-#                  celery -A train_station beat -l INFO --scheduler django_celery_beat.schedulers:DatabaseScheduler"
-#    env_file:
-#      - .env
-#    depends_on:
-#      - app
-#      - redis
-#      - db
-#    restart: on-failure
-#
-#  flower:
-#    build:
-#      context: .
-#      dockerfile: Dockerfile
-#    ports:
-#      - "5555:5555"
-#    command: "celery -A library_service flower --address=0.0.0.0"
-#    depends_on:
-#      - celery
-#    env_file:
-#      - .env
+
+  celery:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: "celery -A train_station_api worker -l info"
+    depends_on:
+      - app
+      - redis
+      - db
+    restart: on-failure
+    env_file:
+      - .env
+
+  celery-beat:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: >
+            sh -c "python manage.py wait_for_db &&
+                  celery -A train_station_api beat -l INFO --scheduler django_celery_beat.schedulers:DatabaseScheduler"
+    env_file:
+      - .env
+    depends_on:
+      - app
+      - redis
+      - db
+    restart: on-failure
+
+  flower:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "5555:5555"
+    command: "celery -A train_station_api flower --address=0.0.0.0"
+    depends_on:
+      - celery
+    env_file:
+      - .env
