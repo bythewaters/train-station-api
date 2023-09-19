@@ -1,3 +1,5 @@
+from typing import Union
+
 from django.contrib.gis.geos import Point
 from rest_framework import serializers
 
@@ -13,7 +15,7 @@ class StationSerializer(serializers.ModelSerializer):
             "coordinate",
         ]
 
-    def get_coordinate(self, obj) -> Point | None:
+    def get_coordinate(self, obj) -> Union[Point, None]:
         """
         Get the Point geometry based on the provided coordinates,
         and format request coordinate data in Point instance for create
