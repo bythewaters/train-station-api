@@ -1,0 +1,74 @@
+services:
+  db:
+    container_name: Postgres_Server
+    image: "postgis/postgis:latest"
+    restart: always
+    env_file:
+      - .env
+    ports:
+      - "5433:5432"
+    volumes:
+      - "./postgres_data:/var/lib/postgresql/data"
+
+  redis:
+    image: "redis:alpine"
+    hostname: redis
+
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    hostname: app
+    stdin_open: true
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./:/app
+    command: sh -c "python manage.py wait_for_db &&
+                  python manage.py migrate &&
+                  python manage.py runserver 0.0.0.0:8000"
+    env_file:
+      - .env
+    depends_on:
+      - db
+#
+#  celery:
+#    build:
+#      context: .
+#      dockerfile: Dockerfile
+#    command: "celery -A train_station worker -l info"
+#    depends_on:
+#      - app
+#      - redis
+#      - db
+#    restart: on-failure
+#    env_file:
+#      - .env
+#
+#  celery-beat:
+#    build:
+#      context: .
+#      dockerfile: Dockerfile
+#    command: >
+#            sh -c "python manage.py wait_for_db &&
+#                  celery -A train_station beat -l INFO --scheduler django_celery_beat.schedulers:DatabaseScheduler"
+#    env_file:
+#      - .env
+#    depends_on:
+#      - app
+#      - redis
+#      - db
+#    restart: on-failure
+#
+#  flower:
+#    build:
+#      context: .
+#      dockerfile: Dockerfile
+#    ports:
+#      - "5555:5555"
+#    command: "celery -A library_service flower --address=0.0.0.0"
+#    depends_on:
+#      - celery
+#    env_file:
+#      - .env
