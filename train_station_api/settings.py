@@ -21,8 +21,9 @@ load_dotenv()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-GDAL_LIBRARY_PATH = os.getenv("GDAL_LIBRARY_PATH")
-GEOS_LIBRARY_PATH = os.getenv("GEOS_LIBRARY_PATH")
+# Uncomment code if you want work in local machine
+# GDAL_LIBRARY_PATH = os.getenv("GDAL_LIBRARY_PATH")
+# GEOS_LIBRARY_PATH = os.getenv("GEOS_LIBRARY_PATH")
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
@@ -95,14 +96,15 @@ WSGI_APPLICATION = "train_station_api.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
+
 DATABASES = {
     "default": {
         "ENGINE": "django.contrib.gis.db.backends.postgis",
+        # Change to train_station in .env file for local work
         "HOST": os.getenv("POSTGRES_HOST"),
         "NAME": os.getenv("POSTGRES_DB"),
         "USER": os.getenv("POSTGRES_USER"),
         "PASSWORD": os.getenv("POSTGRES_PASSWORD"),
-        "PORT": "5432",
     }
 }
 

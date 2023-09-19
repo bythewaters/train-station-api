@@ -4,10 +4,10 @@ amqp==5.1.1
 asgiref==3.7.2
 async-timeout==4.0.3
 attrs==23.1.0
-billiard==4.1.0
+billiard==3.6.4.0
 black==23.7.0
 blinker==1.6.2
-celery==5.3.4
+celery==5.2.7
 certifi==2023.7.22
 charset-normalizer==3.2.0
 click==8.1.7
