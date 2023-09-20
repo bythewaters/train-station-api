@@ -14,7 +14,7 @@
 - Docker app starts only when db is available ( custom command via management/commands )
 
 ## Installing using GitHub:
- - Install Postgres and Postgis extension, then create DB
+ - Install Postgres and Postgis, GDAL extension, then create DB
  - Open .env.sample and change environment variables on yours !Rename file from .env_sample to .env
 
 ```shell
@@ -62,4 +62,6 @@ python manage.py createsuperuser
 ```
 If you want to work in local emvironment, you must to add GDAL and GEO path in settings.py file.
 If you want to work in docker, you must coment or delete this piece of code.
+If you have the problem with nominative certificate in your local machine, you can run
+update_nominatim_certificate.py.
 ```
